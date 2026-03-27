@@ -1,0 +1,21 @@
+appId: com.yourorg.sqlaiassistant
+productName: SQL AI Assistant
+directories:
+  output: dist
+files:
+  - electron/**
+  - frontend/out/**
+  - backend/dist/**
+  - node_modules/**
+  - .env
+win:
+  target: nsis
+  icon: assets/icon.ico
+nsis:
+  oneClick: true
+  installerIcon:   assets/icon.ico
+  uninstallerIcon: assets/icon.ico
+publish:
+  provider: github
+  owner: YOUR_GITHUB_ORG
+  repo:  sql-ai-assistant

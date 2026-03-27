@@ -1,0 +1,65 @@
+.page {
+  max-width: 560px;
+}
+
+.heading {
+  font-size:     var(--text-xl);
+  font-weight:   var(--font-bold);
+  color:         var(--color-text-primary);
+  margin-bottom: var(--space-8);
+}
+
+/* ── Section ── */
+.section {
+  margin-bottom: var(--space-8);
+}
+
+.sectionTitle {
+  font-size:     var(--text-md);
+  font-weight:   var(--font-bold);
+  color:         var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.sectionHint {
+  font-size:     var(--text-sm);
+  color:         var(--color-text-secondary);
+  line-height:   1.6;
+  margin-bottom: var(--space-4);
+}
+
+/* ── Toggle ── */
+.toggle {
+  display:       flex;
+  border:        var(--border);
+  border-radius: var(--radius-lg);
+  overflow:      hidden;
+  width:         fit-content;
+  margin-bottom: var(--space-3);
+}
+
+.toggleBtn {
+  padding:     0 var(--space-8);
+  min-height:  44px;
+  background:  var(--color-surface);
+  color:       var(--color-text-secondary);
+  border:      none;
+  font-size:   var(--text-sm);
+  font-weight: var(--font-medium);
+  transition:  all var(--transition);
+}
+
+.toggleBtn:first-child {
+  border-right: var(--border);
+}
+
+.toggleBtnActive {
+  background: var(--color-accent);
+  color:      #fff;
+}
+
+/* ── Save confirmation ── */
+.savedMsg {
+  font-size: var(--text-sm);
+  color:     var(--color-success);
+}

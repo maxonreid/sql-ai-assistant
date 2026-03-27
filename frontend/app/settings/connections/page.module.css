@@ -1,0 +1,249 @@
+.page {
+  max-width: 720px;
+}
+
+/* ── Page header ── */
+.pageHeader {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  margin-bottom:   var(--space-6);
+}
+
+.heading {
+  font-size:   var(--text-xl);
+  font-weight: var(--font-bold);
+  color:       var(--color-text-primary);
+}
+
+.addBtn {
+  padding:       0 var(--space-5);
+  background:    var(--color-accent);
+  color:         #fff;
+  border:        none;
+  border-radius: var(--radius-md);
+  font-size:     var(--text-sm);
+  font-weight:   var(--font-medium);
+  transition:    background var(--transition);
+}
+
+.addBtn:hover { background: var(--color-accent-hover); }
+
+/* ── Empty state ── */
+.empty {
+  color:     var(--color-text-muted);
+  font-size: var(--text-body);
+}
+
+/* ── Connection list ── */
+.list {
+  list-style: none;
+  display:    flex;
+  flex-direction: column;
+  gap:        var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.card {
+  background:    var(--color-surface);
+  border:        var(--border);
+  border-radius: var(--radius-lg);
+  overflow:      hidden;
+  box-shadow:    var(--shadow-sm);
+}
+
+.cardBody {
+  display:         flex;
+  align-items:     flex-start;
+  justify-content: space-between;
+  padding:         var(--space-4) var(--space-5);
+  gap:             var(--space-4);
+}
+
+.cardInfo {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-1);
+}
+
+.connName {
+  font-size:   var(--text-body);
+  font-weight: var(--font-medium);
+  color:       var(--color-text-primary);
+}
+
+.connMeta {
+  font-size:   var(--text-sm);
+  color:       var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+.cardRight {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-3);
+  flex-shrink: 0;
+}
+
+.badgeActive {
+  font-size:     var(--text-xs);
+  font-weight:   var(--font-medium);
+  padding:       2px var(--space-2);
+  background:    var(--color-success-bg);
+  color:         var(--color-success);
+  border-radius: var(--radius-sm);
+}
+
+.statusOk      { font-size: var(--text-sm); color: var(--color-success); }
+.statusError   { font-size: var(--text-sm); color: var(--color-error);   }
+.statusLoading { font-size: var(--text-sm); color: var(--color-text-muted); font-style: italic; }
+
+/* ── Card action row ── */
+.cardActions {
+  display:       flex;
+  gap:           var(--space-2);
+  padding:       var(--space-2) var(--space-5) var(--space-3);
+  border-top:    var(--border);
+  background:    var(--color-bg);
+}
+
+.actionBtn,
+.actionBtnDanger {
+  padding:       0 var(--space-4);
+  min-height:    36px;
+  font-size:     var(--text-xs);
+  font-weight:   var(--font-medium);
+  border-radius: var(--radius-sm);
+  transition:    all var(--transition);
+}
+
+.actionBtn {
+  background: transparent;
+  color:      var(--color-accent);
+  border:     1px solid var(--color-accent);
+}
+
+.actionBtn:hover:not(:disabled) {
+  background: var(--color-accent);
+  color:      #fff;
+}
+
+.actionBtn:disabled {
+  opacity: 0.5;
+  cursor:  not-allowed;
+}
+
+.actionBtnDanger {
+  background: transparent;
+  color:      var(--color-error);
+  border:     1px solid var(--color-error);
+}
+
+.actionBtnDanger:hover {
+  background: var(--color-error-bg);
+}
+
+/* ── Add/Edit form ── */
+.form {
+  background:    var(--color-surface);
+  border:        var(--border);
+  border-radius: var(--radius-lg);
+  padding:       var(--space-6);
+  box-shadow:    var(--shadow-sm);
+}
+
+.formHeading {
+  font-size:     var(--text-lg);
+  font-weight:   var(--font-bold);
+  color:         var(--color-text-primary);
+  margin-bottom: var(--space-5);
+}
+
+.fieldGrid {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+  gap:                   var(--space-4);
+  margin-bottom:         var(--space-5);
+}
+
+.field {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-2);
+}
+
+.fieldLabel {
+  font-size:   var(--text-sm);
+  font-weight: var(--font-medium);
+  color:       var(--color-text-primary);
+}
+
+.fieldHint {
+  font-weight: var(--font-normal);
+  color:       var(--color-text-muted);
+}
+
+.fieldError {
+  font-size: var(--text-xs);
+  color:     var(--color-error);
+}
+
+.input {
+  padding:       0 var(--space-3);
+  border:        var(--border);
+  border-radius: var(--radius-md);
+  background:    var(--color-bg);
+  color:         var(--color-text-primary);
+  font-size:     var(--text-sm);
+  transition:    border-color var(--transition);
+}
+
+.input:focus {
+  outline:      none;
+  border-color: var(--color-accent);
+  box-shadow:   0 0 0 3px rgba(43,108,176,0.15);
+}
+
+/* ── Form action row ── */
+.formActions {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.saveBtn {
+  padding:       0 var(--space-6);
+  background:    var(--color-accent);
+  color:         #fff;
+  border:        none;
+  border-radius: var(--radius-md);
+  font-size:     var(--text-sm);
+  font-weight:   var(--font-medium);
+  transition:    background var(--transition);
+}
+
+.saveBtn:hover:not(:disabled) { background: var(--color-accent-hover); }
+.saveBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.cancelBtn {
+  padding:       0 var(--space-5);
+  background:    transparent;
+  color:         var(--color-text-secondary);
+  border:        var(--border);
+  border-radius: var(--radius-md);
+  font-size:     var(--text-sm);
+  font-weight:   var(--font-medium);
+  transition:    all var(--transition);
+}
+
+.cancelBtn:hover {
+  background: var(--color-bg);
+  color:      var(--color-text-primary);
+}
+
+.saveHint {
+  font-size:  var(--text-xs);
+  color:      var(--color-text-muted);
+  font-style: italic;
+}
