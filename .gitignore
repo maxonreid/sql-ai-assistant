@@ -3,5 +3,7 @@ node_modules/
 dist/
 frontend/.next/
 frontend/out/
+backend/dist/
+shared/dist/
 data/
 *.db
