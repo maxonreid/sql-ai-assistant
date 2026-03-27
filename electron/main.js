@@ -1,4 +1,4 @@
-const { app, BrowserWindow, session } = require('electron');
+const { app, BrowserWindow, ipcMain, session } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path   = require('path');
 const { spawn } = require('child_process');
@@ -70,6 +70,9 @@ async function createWindow() {
       : `file://${path.join(__dirname, '../frontend/out/index.html')}`
   );
 }
+
+// IPC handlers — must be registered before any renderer window is created.
+ipcMain.handle('get-version', () => app.getVersion());
 
 // App bootstrap sequence: start backend, wait for readiness, then open UI.
 app.whenReady().then(async () => {

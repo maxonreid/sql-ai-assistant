@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import styles from './AIProviderBadge.module.css';
 import type { AIProviderConfig } from '@sql-assistant/shared';
+import { apiUrl } from '../lib/api';
 
 export default function AIProviderBadge() {
   const [provider, setProvider] = useState<'external' | 'local'>('external');
 
   useEffect(() => {
-    fetch('/api/settings/ai-provider')
+    fetch(apiUrl('/api/settings/ai-provider'))
       .then(r => r.json() as Promise<AIProviderConfig>)
       .then(c => setProvider(c.ai_provider));
   }, []);

@@ -1,10 +1,10 @@
-import { authenticator } from 'otplib';
+import { generateSecret, generateURI } from 'otplib';
 import QRCode from 'qrcode';
 
-const secret  = authenticator.generateSecret();
+const secret  = generateSecret();
 const service = 'SQL Assistant';
 const account = 'DBA';
-const otpauth = authenticator.keyuri(account, service, secret);
+const otpauth = generateURI({ type: 'totp', secret, label: account, issuer: service });
 
 console.log('\n========================================');
 console.log('  TOTP SECRET (save this to .env)');

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const o = require\\(''otplib''\\); console.log\\(Object.keys\\(o\\)\\)\")",
+      "Bash(node -e \":*)"
+    ]
+  }
+}

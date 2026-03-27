@@ -2,9 +2,11 @@
 import { useState, useRef, useEffect } from 'react';
 import type { Connection, QueryResult } from '@sql-assistant/shared';
 import AIProviderBadge from '../../components/AIProviderBadge';
+import ConnPanel from '../../components/ConnPanel';
 import ResultPanel from '../../components/ResultPanel';
 import SqlStrip from '../../components/SqlStrip';
 import styles from './page.module.css';
+import { apiUrl } from '../../lib/api';
 
 interface Turn {
   question: string;
@@ -45,7 +47,7 @@ export default function ChatPage() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    fetch('/api/connections')
+    fetch(apiUrl('/api/connections'))
       .then(r => r.json() as Promise<Connection[]>)
       .then(list => {
         setConnections(list);
@@ -68,7 +70,7 @@ export default function ChatPage() {
     setQuestion('');
 
     try {
-      const res = await fetch('/api/query', {
+      const res = await fetch(apiUrl('/api/query'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: q, connectionId, language: lang }),
@@ -105,18 +107,12 @@ export default function ChatPage() {
         <span className={styles.appName}>SQL Assistant</span>
 
         <div className={styles.controls}>
-          <select
-            className={styles.select}
-            value={connectionId ?? ''}
-            onChange={e => setConnectionId(Number(e.target.value))}
-            disabled={connections.length === 0}
-          >
-            {connections.length === 0
-              ? <option value="">{t.noConn}</option>
-              : connections.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-          </select>
+          <ConnPanel
+            connections={connections}
+            value={connectionId}
+            onChange={setConnectionId}
+            noConnLabel={t.noConn}
+          />
 
           <select
             className={styles.select}

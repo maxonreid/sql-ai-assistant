@@ -1,0 +1,45 @@
+.wrapper {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-2);
+}
+
+/* Status dot — matches the topbar dark bg */
+.dotActive,
+.dotInactive {
+  width:        8px;
+  height:       8px;
+  border-radius: 50%;
+  flex-shrink:  0;
+}
+
+.dotActive   { background: #6EE7B7; }   /* green — connection tested OK */
+.dotInactive { background: rgba(255,255,255,0.30); }  /* dim — untested / failed */
+
+.select {
+  height:        36px;
+  min-height:    36px;
+  padding:       0 var(--space-3);
+  background:    rgba(255,255,255,0.12);
+  color:         var(--color-topbar-text);
+  border:        1px solid rgba(255,255,255,0.25);
+  border-radius: var(--radius-md);
+  font-size:     var(--text-sm);
+  cursor:        pointer;
+}
+
+.select option {
+  background: var(--color-topbar);
+  color:      #fff;
+}
+
+/* "No connections" — links to settings page */
+.empty {
+  color:           rgba(255,255,255,0.55);
+  font-size:       var(--text-sm);
+  text-decoration: none;
+  padding:         0 var(--space-2);
+  transition:      color var(--transition);
+}
+
+.empty:hover { color: #fff; }
