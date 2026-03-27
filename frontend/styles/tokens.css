@@ -1,0 +1,64 @@
+:root {
+  /* ── Colors ── */
+  --color-topbar:        #1B3A5C;
+  --color-topbar-text:   #FFFFFF;
+  --color-accent:        #2B6CB0;
+  --color-accent-hover:  #1A56A0;
+  --color-performance:   #6D28D9;   /* purple — DMV/performance only */
+  --color-bg:            #F2F5F9;
+  --color-surface:       #FFFFFF;
+  --color-border:        #D1D9E6;
+  --color-text-primary:  #1A202C;
+  --color-text-secondary:#4A5568;
+  --color-text-muted:    #718096;
+  --color-success:       #065F46;
+  --color-success-bg:    #D1FAE5;
+  --color-error:         #991B1B;
+  --color-error-bg:      #FEE2E2;
+  --color-warning:       #92400E;
+  --color-warning-bg:    #FEF3C7;
+
+  /* ── SQL / Code panel ── */
+  --color-sql-bg:        #0F1B2D;
+  --color-sql-text:      #D4D4D4;
+  --color-sql-comment:   #6A9955;
+  --color-sql-keyword:   #569CD6;
+  --color-sql-string:    #CE9178;
+
+  /* ── Typography ── */
+  --font-sans:   'IBM Plex Sans',  system-ui, sans-serif;
+  --font-mono:   'IBM Plex Mono',  'Courier New', monospace;
+  --text-xs:     12px;
+  --text-sm:     13px;
+  --text-body:   15px;
+  --text-md:     16px;
+  --text-lg:     18px;
+  --text-xl:     22px;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-bold:   600;
+
+  /* ── Spacing ── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+
+  /* ── Borders & Radius ── */
+  --radius-sm:  4px;
+  --radius-md:  6px;
+  --radius-lg:  8px;
+  --radius-xl:  12px;
+  --border:     1px solid var(--color-border);
+
+  /* ── Shadows ── */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.10);
+
+  /* ── Transitions ── */
+  --transition: 150ms ease;
+}
