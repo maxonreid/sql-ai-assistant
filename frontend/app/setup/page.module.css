@@ -40,45 +40,72 @@
 }
 
 .langActive {
-  background: var(--color-accent);
-  color:      #fff;
+  background:   var(--color-accent);
+  color:        #fff;
   border-color: var(--color-accent);
 }
 
 /* ── Card ── */
 .card {
-  width:         100%;
-  max-width:     360px;
-  background:    var(--color-surface);
-  border:        var(--border);
-  border-radius: var(--radius-xl);
-  box-shadow:    var(--shadow-md);
-  padding:       var(--space-10) var(--space-8);
-  display:       flex;
+  width:          100%;
+  max-width:      400px;
+  background:     var(--color-surface);
+  border:         var(--border);
+  border-radius:  var(--radius-xl);
+  box-shadow:     var(--shadow-md);
+  padding:        var(--space-8);
+  display:        flex;
   flex-direction: column;
-  align-items:   center;
-  gap:           var(--space-4);
-}
-
-.lockIcon {
-  font-size: 36px;
-  line-height: 1;
-  user-select: none;
+  align-items:    center;
+  gap:            var(--space-5);
 }
 
 .title {
-  font-size:   var(--text-xl);
-  font-weight: var(--font-bold);
-  color:       var(--color-topbar);
-  margin:      0;
+  font-size:      var(--text-xl);
+  font-weight:    var(--font-bold);
+  color:          var(--color-topbar);
+  margin:         0;
   letter-spacing: 0.01em;
+  text-align:     center;
 }
 
-.subtitle {
+/* ── QR code block ── */
+.qrWrap {
+  width:          208px;
+  height:         208px;
+  display:        flex;
+  align-items:    center;
+  justify-content: center;
+  background:     #fff;
+  border:         var(--border);
+  border-radius:  var(--radius-lg);
+  padding:        4px;
+  flex-shrink:    0;
+}
+
+.qrLoading,
+.qrError {
+  font-size:  var(--text-sm);
+  text-align: center;
+  margin:     0;
+}
+
+.qrLoading { color: var(--color-text-muted); }
+.qrError   { color: var(--color-error); }
+
+/* ── Instruction steps ── */
+.steps {
+  width:       100%;
+  margin:      0;
+  padding:     0 0 0 var(--space-5);
+  display:     flex;
+  flex-direction: column;
+  gap:         var(--space-2);
+}
+
+.steps li {
   font-size:   var(--text-sm);
   color:       var(--color-text-secondary);
-  text-align:  center;
-  margin:      0;
   line-height: 1.5;
 }
 
@@ -88,7 +115,6 @@
   display:        flex;
   flex-direction: column;
   gap:            var(--space-3);
-  margin-top:     var(--space-2);
 }
 
 .label {
@@ -98,20 +124,20 @@
 }
 
 .input {
-  width:         100%;
-  height:        56px;
-  text-align:    center;
-  font-size:     28px;
-  font-family:   var(--font-mono);
-  font-weight:   var(--font-bold);
+  width:          100%;
+  height:         56px;
+  text-align:     center;
+  font-size:      28px;
+  font-family:    var(--font-mono);
+  font-weight:    var(--font-bold);
   letter-spacing: 0.35em;
-  color:         var(--color-text-primary);
-  background:    var(--color-bg);
-  border:        2px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  transition:    border-color var(--transition), box-shadow var(--transition);
-  box-sizing:    border-box;
-  padding:       0 var(--space-4);
+  color:          var(--color-text-primary);
+  background:     var(--color-bg);
+  border:         2px solid var(--color-border);
+  border-radius:  var(--radius-lg);
+  transition:     border-color var(--transition), box-shadow var(--transition);
+  box-sizing:     border-box;
+  padding:        0 var(--space-4);
 }
 
 .input:focus {
@@ -146,7 +172,6 @@
   width:         100%;
   height:        48px;
   min-height:    44px;
-  margin-top:    var(--space-2);
   background:    var(--color-accent);
   color:         #fff;
   border:        none;
@@ -177,7 +202,6 @@
   flex-direction: column;
   align-items:    center;
   gap:            var(--space-2);
-  margin-top:     var(--space-2);
 }
 
 .lockoutTitle {

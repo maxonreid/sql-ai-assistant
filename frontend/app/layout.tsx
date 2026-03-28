@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import '../styles/globals.css';
 import { LangProvider } from '../lib/language-context';
+import SessionGuard from '../components/SessionGuard';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body><LangProvider>{children}</LangProvider></body>
+      <body><LangProvider><SessionGuard>{children}</SessionGuard></LangProvider></body>
     </html>
   );
 }

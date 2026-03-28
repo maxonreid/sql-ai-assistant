@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import styles from './AIProviderSettings.module.css';
 import type { AIProviderConfig } from '@sql-assistant/shared';
-import { apiUrl } from '../lib/api';
+import { apiFetch } from '../lib/api';
 
 export default function AIProviderSettings() {
   const [config, setConfig] = useState<AIProviderConfig>({
@@ -18,14 +18,14 @@ export default function AIProviderSettings() {
   const [saving,  setSaving]  = useState(false);
 
   useEffect(() => {
-    fetch(apiUrl('/api/settings/ai-provider'))
+    apiFetch('/api/settings/ai-provider')
       .then(r => r.json() as Promise<AIProviderConfig>)
       .then(setConfig);
   }, []);
 
   const testOllama = async () => {
     setStatus('idle'); setErrMsg('');
-    const res  = await fetch(apiUrl('/api/settings/test-ollama'), {
+    const res  = await apiFetch('/api/settings/test-ollama', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ ollama_url: config.ollama_url }),
@@ -37,7 +37,7 @@ export default function AIProviderSettings() {
 
   const save = async () => {
     setSaving(true);
-    await fetch(apiUrl('/api/settings/ai-provider'), {
+    await apiFetch('/api/settings/ai-provider', {
       method:  'PUT',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(config),

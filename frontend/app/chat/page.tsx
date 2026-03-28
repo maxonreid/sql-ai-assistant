@@ -1,12 +1,12 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import type { Connection, QueryResult } from '@sql-assistant/shared';
+import type { Connection, QueryResult, HistoryItem } from '@sql-assistant/shared';
 import AIProviderBadge from '../../components/AIProviderBadge';
 import ConnPanel from '../../components/ConnPanel';
 import ResultPanel from '../../components/ResultPanel';
 import SqlStrip from '../../components/SqlStrip';
 import styles from './page.module.css';
-import { apiUrl } from '../../lib/api';
+import { apiFetch } from '../../lib/api';
 import { useLang } from '../../lib/language-context';
 import type { Lang } from '../../lib/language-context';
 
@@ -17,18 +17,40 @@ interface Turn {
 
 const T = {
   es: {
-    placeholder: 'Escribe tu pregunta sobre la base de datos… (Ctrl+Enter para enviar)',
-    send: 'Enviar',
-    loading: 'Consultando…',
-    empty: 'Haz una pregunta sobre tu base de datos.',
-    noConn: 'Sin conexiones',
+    placeholder:  'Escribe tu pregunta sobre la base de datos… (Ctrl+Enter para enviar)',
+    send:         'Enviar',
+    loading:      'Consultando…',
+    noConn:       'Sin conexiones',
+    history:      'Historial',
+    historyEmpty: 'Sin consultas recientes.',
+    rows:         'filas',
+    subtitle:     'Diagnósticos instantáneos de SQL Server en lenguaje natural — rendimiento, bloqueos, índices, memoria y más. La base de datos nunca se modifica.',
+    chips: [
+      '⚡ ¿Qué consultas consumen más CPU ahora mismo?',
+      '🔒 ¿Hay bloqueos o deadlocks activos?',
+      '⏱ Tipos de espera más costosos del servidor',
+      '💾 ¿Cómo está el uso de memoria?',
+      '⚠ ¿Hay clientes con RFC duplicado?',
+      '📊 Ventas por mes este año',
+    ],
   },
   en: {
-    placeholder: 'Ask a question about your database… (Ctrl+Enter to send)',
-    send: 'Send',
-    loading: 'Running query…',
-    empty: 'Ask a question about your database.',
-    noConn: 'No connections',
+    placeholder:  'Ask a question about your database… (Ctrl+Enter to send)',
+    send:         'Send',
+    loading:      'Running query…',
+    noConn:       'No connections',
+    history:      'History',
+    historyEmpty: 'No recent queries.',
+    rows:         'rows',
+    subtitle:     'Instant SQL Server diagnostics in natural language — performance, blocking, indexes, memory and more. The database is never modified.',
+    chips: [
+      '⚡ Which queries are consuming the most CPU right now?',
+      '🔒 Are there any active blocks or deadlocks?',
+      '⏱ Most expensive wait types on the server',
+      '💾 How is memory usage looking?',
+      '⚠ Are there customers with duplicate RFC?',
+      '📊 Sales by month this year',
+    ],
   },
 } as const;
 
@@ -42,12 +64,14 @@ export default function ChatPage() {
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    fetch(apiUrl('/api/connections'))
+    apiFetch('/api/connections')
       .then(r => r.json() as Promise<Connection[]>)
       .then(list => {
         setConnections(list);
@@ -57,12 +81,25 @@ export default function ChatPage() {
       .catch(() => {});
   }, []);
 
+  const fetchHistory = (connId: number | null = connectionId) => {
+    const qs = connId !== null ? `?connectionId=${connId}&limit=50` : '?limit=50';
+    apiFetch(`/api/history${qs}`)
+      .then(r => r.json() as Promise<HistoryItem[]>)
+      .then(setHistory)
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    if (historyOpen) fetchHistory();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyOpen, connectionId]);
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [turns, loading]);
 
-  const submit = async () => {
-    const q = question.trim();
+  const submit = async (override?: string) => {
+    const q = (override ?? question).trim();
     if (!q || connectionId === null || loading) return;
 
     setLoading(true);
@@ -70,7 +107,7 @@ export default function ChatPage() {
     setQuestion('');
 
     try {
-      const res = await fetch(apiUrl('/api/query'), {
+      const res = await apiFetch('/api/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: q, connectionId, language: lang }),
@@ -83,6 +120,7 @@ export default function ChatPage() {
 
       const result = await res.json() as QueryResult;
       setTurns(prev => [...prev, { question: q, result }]);
+      if (historyOpen) fetchHistory();
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -104,7 +142,18 @@ export default function ChatPage() {
     <div className={styles.shell}>
       {/* ── Top bar ── */}
       <header className={styles.topbar}>
-        <span className={styles.appName}>SQL Assistant</span>
+        <div className={styles.topbarLeft}>
+          <button
+            className={`${styles.historyToggle} ${historyOpen ? styles.historyToggleActive : ''}`}
+            onClick={() => setHistoryOpen(o => !o)}
+            title={t.history}
+            aria-label={t.history}
+            aria-pressed={historyOpen}
+          >
+            ☰
+          </button>
+          <span className={styles.appName}>SQL Assistant</span>
+        </div>
 
         <div className={styles.controls}>
           <ConnPanel
@@ -127,54 +176,104 @@ export default function ChatPage() {
         </div>
       </header>
 
-      {/* ── Chat feed ── */}
-      <main className={styles.feed}>
-        {turns.length === 0 && !loading && !error && (
-          <p className={styles.empty}>{t.empty}</p>
+      {/* ── Body row (sidebar + main column) ── */}
+      <div className={styles.body}>
+
+        {/* ── History sidebar ── */}
+        {historyOpen && (
+          <aside className={styles.sidebar}>
+            <p className={styles.sidebarHeading}>{t.history}</p>
+            {history.length === 0 ? (
+              <p className={styles.sidebarEmpty}>{t.historyEmpty}</p>
+            ) : (
+              <ul className={styles.historyList}>
+                {history.map(item => (
+                  <li key={item.id}>
+                    <button
+                      className={styles.historyItem}
+                      onClick={() => {
+                        setQuestion(item.question);
+                        textareaRef.current?.focus();
+                      }}
+                    >
+                      <span className={styles.historyQuestion}>{item.question}</span>
+                      <span className={styles.historyMeta}>
+                        {item.row_count} {t.rows} · {item.duration_ms}ms
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </aside>
         )}
 
-        {turns.map((turn, i) => (
-          <div key={i} className={styles.turn}>
-            <div className={styles.question}>{turn.question}</div>
-            <SqlStrip sql={turn.result.sql} queryType={turn.result.queryType} />
-            <ResultPanel result={turn.result} />
-          </div>
-        ))}
+        {/* ── Main column ── */}
+        <div className={styles.mainCol}>
+          {/* ── Chat feed ── */}
+          <main className={styles.feed}>
+            {turns.length === 0 && !loading && !error && (
+              <div className={styles.welcome}>
+                <p className={styles.welcomeSubtitle}>{t.subtitle}</p>
+                <div className={styles.chips}>
+                  {t.chips.map((chip, i) => (
+                    <button
+                      key={i}
+                      className={`${styles.chip} ${i < 4 ? styles.chipPerf : styles.chipBiz}`}
+                      onClick={() => submit(chip)}
+                      disabled={connectionId === null}
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-        {loading && (
-          <div className={styles.loadingRow}>
-            <span className={styles.spinner} />
-            <span className={styles.loadingLabel}>{t.loading}</span>
-          </div>
-        )}
+            {turns.map((turn, i) => (
+              <div key={i} className={styles.turn}>
+                <div className={styles.question}>{turn.question}</div>
+                <SqlStrip sql={turn.result.sql} queryType={turn.result.queryType} />
+                <ResultPanel result={turn.result} />
+              </div>
+            ))}
 
-        {error && (
-          <div className={styles.errorBox}>{error}</div>
-        )}
+            {loading && (
+              <div className={styles.loadingRow}>
+                <span className={styles.spinner} />
+                <span className={styles.loadingLabel}>{t.loading}</span>
+              </div>
+            )}
 
-        <div ref={bottomRef} />
-      </main>
+            {error && (
+              <div className={styles.errorBox}>{error}</div>
+            )}
 
-      {/* ── Input bar ── */}
-      <footer className={styles.inputBar}>
-        <textarea
-          ref={textareaRef}
-          className={styles.textarea}
-          value={question}
-          onChange={e => setQuestion(e.target.value)}
-          onKeyDown={onKeyDown}
-          placeholder={t.placeholder}
-          rows={2}
-          disabled={loading || connectionId === null}
-        />
-        <button
-          className={styles.sendBtn}
-          onClick={submit}
-          disabled={!canSubmit}
-        >
-          {t.send}
-        </button>
-      </footer>
+            <div ref={bottomRef} />
+          </main>
+
+          {/* ── Input bar ── */}
+          <footer className={styles.inputBar}>
+            <textarea
+              ref={textareaRef}
+              className={styles.textarea}
+              value={question}
+              onChange={e => setQuestion(e.target.value)}
+              onKeyDown={onKeyDown}
+              placeholder={t.placeholder}
+              rows={2}
+              disabled={loading || connectionId === null}
+            />
+            <button
+              className={styles.sendBtn}
+              onClick={submit}
+              disabled={!canSubmit}
+            >
+              {t.send}
+            </button>
+          </footer>
+        </div>
+      </div>
     </div>
   );
 }

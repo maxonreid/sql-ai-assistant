@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import type { Connection } from '@sql-assistant/shared';
 import styles from './page.module.css';
-import { apiUrl } from '../../../lib/api';
+import { apiFetch } from '../../../lib/api';
 
 type FormValues = {
   name: string;
@@ -31,7 +31,7 @@ export default function ConnectionsPage() {
   } = useForm<FormValues>({ defaultValues: { port: 1433 } });
 
   const load = () =>
-    fetch(apiUrl('/api/connections'))
+    apiFetch('/api/connections')
       .then(r => r.json() as Promise<Connection[]>)
       .then(setConnections)
       .catch(() => {});
@@ -60,7 +60,7 @@ export default function ConnectionsPage() {
   const testConnection = async (id: number) => {
     setTestStates(prev => ({ ...prev, [id]: { status: 'loading' } }));
     try {
-      const res  = await fetch(apiUrl(`/api/connections/${id}/test`), { method: 'POST' });
+      const res  = await apiFetch(`/api/connections/${id}/test`, { method: 'POST' });
       const data = await res.json() as { ok: boolean; error?: string };
       setTestStates(prev => ({
         ...prev,
@@ -80,7 +80,7 @@ export default function ConnectionsPage() {
       let savedId: number;
 
       if (editingId === 'new') {
-        const res  = await fetch(apiUrl('/api/connections'), {
+        const res  = await apiFetch('/api/connections', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify(data),
@@ -90,7 +90,7 @@ export default function ConnectionsPage() {
       } else {
         const body: Partial<FormValues> = { ...data };
         if (!body.password) delete body.password; // keep existing password if blank
-        await fetch(apiUrl(`/api/connections/${editingId}`), {
+        await apiFetch(`/api/connections/${editingId}`, {
           method:  'PUT',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify(body),
@@ -107,7 +107,7 @@ export default function ConnectionsPage() {
   };
 
   const deleteConn = async (id: number) => {
-    await fetch(apiUrl(`/api/connections/${id}`), { method: 'DELETE' });
+    await apiFetch(`/api/connections/${id}`, { method: 'DELETE' });
     setDeleteConfirm(null);
     setTestStates(prev => { const n = { ...prev }; delete n[id]; return n; });
     await load();

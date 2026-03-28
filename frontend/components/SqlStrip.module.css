@@ -57,6 +57,7 @@
   max-height: 600px;
 }
 
+/* Plain fallback (before shiki loads) */
 .code {
   padding:     var(--space-4);
   font-family: var(--font-mono);
@@ -65,6 +66,19 @@
   white-space: pre-wrap;
   word-break:  break-word;
   line-height: 1.7;
+}
+
+/* Shiki output — override its inline background so the container colour shows */
+.highlighted pre {
+  background:  transparent !important;
+  margin:      0;
+  padding:     var(--space-4);
+  font-family: var(--font-mono);
+  font-size:   var(--text-sm);
+  white-space: pre-wrap;
+  word-break:  break-word;
+  line-height: 1.7;
+  overflow-x:  auto;
 }
 
 .chevron {

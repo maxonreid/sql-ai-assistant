@@ -12,7 +12,7 @@
   display:         flex;
   align-items:     center;
   justify-content: space-between;
-  padding:         0 var(--space-6);
+  padding:         0 var(--space-4) 0 var(--space-3);
   height:          56px;
   flex-shrink:     0;
   background:      var(--color-topbar);
@@ -20,10 +20,129 @@
   box-shadow:      0 1px 4px rgba(0,0,0,0.20);
 }
 
+.topbarLeft {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-3);
+}
+
+.historyToggle {
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+  width:         36px;
+  height:        36px;
+  min-height:    36px;
+  background:    transparent;
+  border:        1px solid rgba(255,255,255,0.20);
+  border-radius: var(--radius-md);
+  color:         var(--color-topbar-text);
+  font-size:     18px;
+  cursor:        pointer;
+  transition:    background var(--transition);
+  flex-shrink:   0;
+}
+
+.historyToggle:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.historyToggleActive {
+  background:   rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.40);
+}
+
 .appName {
   font-size:   var(--text-md);
   font-weight: var(--font-bold);
   letter-spacing: 0.02em;
+}
+
+/* ── Body row (sidebar + main column) ── */
+.body {
+  display:  flex;
+  flex:     1;
+  overflow: hidden;
+}
+
+/* ── History sidebar ── */
+.sidebar {
+  width:          260px;
+  flex-shrink:    0;
+  background:     var(--color-surface);
+  border-right:   var(--border);
+  display:        flex;
+  flex-direction: column;
+  overflow:       hidden;
+}
+
+.sidebarHeading {
+  padding:     var(--space-4) var(--space-4) var(--space-2);
+  font-size:   var(--text-sm);
+  font-weight: var(--font-medium);
+  color:       var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  margin:      0;
+  border-bottom: var(--border);
+}
+
+.sidebarEmpty {
+  padding:    var(--space-4);
+  font-size:  var(--text-sm);
+  color:      var(--color-text-muted);
+  text-align: center;
+  margin:     0;
+}
+
+.historyList {
+  list-style: none;
+  margin:     0;
+  padding:    var(--space-2) 0;
+  overflow-y: auto;
+  flex:       1;
+}
+
+.historyItem {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-1);
+  width:          100%;
+  text-align:     left;
+  background:     transparent;
+  border:         none;
+  padding:        var(--space-3) var(--space-4);
+  cursor:         pointer;
+  transition:     background var(--transition);
+  border-bottom:  1px solid var(--color-border);
+}
+
+.historyItem:hover {
+  background: var(--color-bg);
+}
+
+.historyQuestion {
+  font-size:     var(--text-sm);
+  color:         var(--color-text-primary);
+  line-height:   1.4;
+  display:       -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow:      hidden;
+}
+
+.historyMeta {
+  font-size:  var(--text-xs, 11px);
+  color:      var(--color-text-muted);
+}
+
+/* ── Main column ── */
+.mainCol {
+  flex:           1;
+  display:        flex;
+  flex-direction: column;
+  overflow:       hidden;
 }
 
 .controls {
@@ -59,11 +178,73 @@
   gap:        var(--space-6);
 }
 
-.empty {
-  margin:      auto;
-  color:       var(--color-text-muted);
-  font-size:   var(--text-md);
+/* ── Welcome state ── */
+.welcome {
+  margin:         auto;
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            var(--space-6);
+  max-width:      640px;
+  width:          100%;
+  padding:        var(--space-4) 0;
+}
+
+.welcomeSubtitle {
+  font-size:   var(--text-sm);
+  color:       var(--color-text-secondary);
   text-align:  center;
+  line-height: 1.6;
+  margin:      0;
+}
+
+.chips {
+  display:         flex;
+  flex-wrap:       wrap;
+  gap:             var(--space-2);
+  justify-content: center;
+}
+
+.chip {
+  padding:       var(--space-2) var(--space-4);
+  border-radius: var(--radius-xl);
+  font-size:     var(--text-sm);
+  line-height:   1.4;
+  cursor:        pointer;
+  border:        1px solid transparent;
+  text-align:    left;
+  transition:    background var(--transition), border-color var(--transition), opacity var(--transition);
+  max-width:     280px;
+}
+
+.chip:disabled {
+  opacity: 0.45;
+  cursor:  not-allowed;
+}
+
+/* Performance chips — blue tint */
+.chipPerf {
+  background:   rgba(43, 108, 176, 0.08);
+  color:        var(--color-accent);
+  border-color: rgba(43, 108, 176, 0.20);
+}
+
+.chipPerf:hover:not(:disabled) {
+  background:   rgba(43, 108, 176, 0.15);
+  border-color: rgba(43, 108, 176, 0.35);
+}
+
+/* Business chips — neutral tint */
+.chipBiz {
+  background:   var(--color-surface);
+  color:        var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.chipBiz:hover:not(:disabled) {
+  background:   var(--color-bg);
+  border-color: var(--color-accent);
+  color:        var(--color-accent);
 }
 
 /* ── Single question+answer turn ── */

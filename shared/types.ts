@@ -43,6 +43,19 @@ export interface AIProviderConfig {
   anthropic_model: string;
 }
 
+export interface HistoryItem {
+  id: number;
+  connection_id: number;
+  question: string;
+  generated_sql: string;
+  query_type: QueryType;
+  response_type: ResponseType;
+  duration_ms: number;
+  row_count: number;
+  created_at: string;
+  language: string;
+}
+
 export interface SchemaTable {
   name: string;
   columns: SchemaColumn[];
