@@ -2,15 +2,21 @@
   "name": "electron",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
+    "dev": "wait-on http://127.0.0.1:3001/api/health http://localhost:3000 && electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "electron-updater": "^6.3.9"
+  },
   "devDependencies": {
+    "electron": "^36.0.0",
     "electron-builder": "^26.8.1",
     "wait-on": "^9.0.4"
   }

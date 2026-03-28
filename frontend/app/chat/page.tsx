@@ -7,6 +7,8 @@ import ResultPanel from '../../components/ResultPanel';
 import SqlStrip from '../../components/SqlStrip';
 import styles from './page.module.css';
 import { apiUrl } from '../../lib/api';
+import { useLang } from '../../lib/language-context';
+import type { Lang } from '../../lib/language-context';
 
 interface Turn {
   question: string;
@@ -30,11 +32,9 @@ const T = {
   },
 } as const;
 
-type Lang = keyof typeof T;
-
 export default function ChatPage() {
-  const [lang, setLang] = useState<Lang>('es');
-  const t = T[lang];
+  const { lang, setLang } = useLang();
+  const t = T[lang as Lang];
 
   const [connections, setConnections] = useState<Connection[]>([]);
   const [connectionId, setConnectionId] = useState<number | null>(null);

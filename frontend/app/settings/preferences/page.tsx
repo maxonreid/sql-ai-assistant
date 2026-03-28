@@ -1,22 +1,15 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import clsx from 'clsx';
 import styles from './page.module.css';
-
-const LANG_KEY = 'sql-assistant:lang';
+import { useLang } from '../../../lib/language-context';
 
 export default function PreferencesPage() {
-  const [lang, setLang] = useState<'es' | 'en'>('es');
+  const { lang, setLang } = useLang();
   const [saved, setSaved] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem(LANG_KEY);
-    if (stored === 'en' || stored === 'es') setLang(stored);
-  }, []);
 
   const select = (l: 'es' | 'en') => {
     setLang(l);
-    localStorage.setItem(LANG_KEY, l);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };

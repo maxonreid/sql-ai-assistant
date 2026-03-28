@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 import { apiUrl } from '../../lib/api';
+import { useLang } from '../../lib/language-context';
 
 const T = {
   es: {
@@ -32,17 +33,14 @@ type Lang = keyof typeof T;
 export default function LoginPage() {
   const router = useRouter();
 
-  const [lang, setLang] = useState<Lang>('es');
+  const { lang, setLang } = useLang();
   const [code, setCode] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const t = T[lang];
+  const t = T[lang as Lang];
 
-  // Restore language preference set in the app
   useEffect(() => {
-    const stored = localStorage.getItem('sql-assistant:lang');
-    if (stored === 'en' || stored === 'es') setLang(stored);
     inputRef.current?.focus();
   }, []);
 
