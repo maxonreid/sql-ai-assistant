@@ -1,14 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 import type { Database } from 'better-sqlite3';
-import { TOTP, NobleCryptoPlugin, ScureBase32Plugin, generateSecret } from 'otplib';
+import { generateSecret, verify as totpVerify } from 'otplib';
 import QRCode from 'qrcode';
 import { encrypt, decrypt } from '../utils/crypto';
 import { issueToken, revokeToken } from '../utils/session';
-
-const totp = new TOTP({
-  crypto: new NobleCryptoPlugin(),
-  base32: new ScureBase32Plugin(),
-});
 
 // In-memory rate limiter — single-user desktop app, no persistence needed.
 const rl = { failCount: 0, lockedUntil: 0 };
@@ -88,9 +83,9 @@ export async function authRoutes(
     const secret = getStoredSecret(db);
     if (!secret) return reply.code(400).send({ ok: false, error: 'Setup not initialised — visit /api/auth/setup first' });
 
-    const result = await totp.verify(token, { secret, epochTolerance: 30 });
+    const { valid: isValid } = await totpVerify({ token, secret, type: 'totp' });
 
-    if (!result.valid) {
+    if (!isValid) {
       rl.failCount += 1;
       if (rl.failCount >= MAX_ATTEMPTS) {
         rl.lockedUntil = Date.now() + LOCKOUT_MS;
@@ -121,9 +116,9 @@ export async function authRoutes(
     const secret = getStoredSecret(db);
     if (!secret) return reply.code(500).send({ ok: false, error: 'TOTP secret not found' });
 
-    const result = await totp.verify(token, { secret, epochTolerance: 30 });
+    const { valid: isValid } = await totpVerify({ token, secret, type: 'totp' });
 
-    if (!result.valid) {
+    if (!isValid) {
       rl.failCount += 1;
       if (rl.failCount >= MAX_ATTEMPTS) {
         rl.lockedUntil = Date.now() + LOCKOUT_MS;

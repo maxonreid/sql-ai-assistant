@@ -4,7 +4,8 @@
       "Bash(node -e \"const o = require\\(''otplib''\\); console.log\\(Object.keys\\(o\\)\\)\")",
       "Bash(node -e \":*)",
       "Bash(wc:*)",
-      "Bash(grep -r import.*from /c/Users/maxon/Documents/MAX-WEB-LABS/sql-ai-assistant/frontend/app/settings/connections/page.tsx)"
+      "Bash(grep -r import.*from /c/Users/maxon/Documents/MAX-WEB-LABS/sql-ai-assistant/frontend/app/settings/connections/page.tsx)",
+      "Bash(node:*)"
     ]
   }
 }

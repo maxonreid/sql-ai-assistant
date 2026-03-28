@@ -98,13 +98,13 @@
   overflow-x: auto;
 }
 
-table {
+.tableWrapper table {
   width:           100%;
   border-collapse: collapse;
   font-size:       var(--text-sm);
 }
 
-thead th {
+.tableWrapper thead th {
   padding:        var(--space-2) var(--space-4);
   text-align:     left;
   font-weight:    var(--font-medium);
@@ -119,11 +119,11 @@ thead th {
   user-select:    none;
 }
 
-thead th:hover {
+.tableWrapper thead th:hover {
   color: var(--color-text-primary);
 }
 
-tbody td {
+.tableWrapper tbody td {
   padding:       var(--space-2) var(--space-4);
   border-bottom: 1px solid #EDF2F7;
   color:         var(--color-text-primary);
@@ -131,11 +131,11 @@ tbody td {
   font-size:     var(--text-xs);
 }
 
-tbody tr:last-child td {
+.tableWrapper tbody tr:last-child td {
   border-bottom: none;
 }
 
-tbody tr:hover td {
+.tableWrapper tbody tr:hover td {
   background: #F7FAFC;
 }
 

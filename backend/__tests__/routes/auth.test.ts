@@ -11,12 +11,7 @@ vi.stubEnv('ENCRYPTION_KEY', TEST_ENCRYPTION_KEY);
 vi.mock('otplib', () => {
   const mockVerify = vi.fn();
   const mockGenerateSecret = vi.fn().mockReturnValue('TESTSECRETBASE32AAA');
-  const NobleCryptoPlugin  = vi.fn();
-  const ScureBase32Plugin  = vi.fn();
-  class TOTP {
-    verify = mockVerify;
-  }
-  return { TOTP, NobleCryptoPlugin, ScureBase32Plugin, generateSecret: mockGenerateSecret };
+  return { verify: mockVerify, generateSecret: mockGenerateSecret };
 });
 
 // Mock qrcode to avoid canvas/native deps
@@ -24,11 +19,11 @@ vi.mock('qrcode', () => ({
   default: { toDataURL: vi.fn().mockResolvedValue('data:image/png;base64,MOCK') },
 }));
 
-import { TOTP } from 'otplib';
+import { verify as mockVerifyFn } from 'otplib';
 
-// Helper to get the shared mock verify fn from the mocked TOTP instance
+// Helper to get the shared mock verify fn
 function getMockVerify() {
-  return (new TOTP() as any).verify as ReturnType<typeof vi.fn>;
+  return mockVerifyFn as unknown as ReturnType<typeof vi.fn>;
 }
 
 async function buildApp() {
