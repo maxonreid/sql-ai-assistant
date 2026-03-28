@@ -1,5 +1,7 @@
-const { app, BrowserWindow, ipcMain, session } = require('electron');
+const { app, BrowserWindow, ipcMain, session, safeStorage } = require('electron');
 const { autoUpdater } = require('electron-updater');
+const crypto = require('crypto');
+const fs     = require('fs');
 const path   = require('path');
 const { spawn } = require('child_process');
 
@@ -8,8 +10,25 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 let mainWindow;
 let backendProcess;
 
+// Retrieve the AES-256 encryption key from OS-protected storage (Windows DPAPI).
+// On first run, a random key is generated, encrypted via safeStorage, and written
+// to the app's userData directory. On subsequent runs it is decrypted and returned.
+// The key is never stored in plaintext on disk.
+function getOrCreateEncryptionKey() {
+  const keyFile = path.join(app.getPath('userData'), 'encryption.key');
+
+  if (fs.existsSync(keyFile)) {
+    const encrypted = fs.readFileSync(keyFile);
+    return safeStorage.decryptString(encrypted);
+  }
+
+  const key = crypto.randomBytes(32).toString('hex');
+  fs.writeFileSync(keyFile, safeStorage.encryptString(key));
+  return key;
+}
+
 // Start the backend API as a child process so Electron and API boot together.
-function startBackend() {
+function startBackend(encryptionKey) {
   const isDev   = process.env.NODE_ENV === 'development';
   const runner  = isDev ? 'tsx' : 'node';
   const entry   = isDev
@@ -17,7 +36,7 @@ function startBackend() {
     : path.join(__dirname, '../backend/dist/server.js');
 
   backendProcess = spawn(runner, [entry], {
-    env:   { ...process.env },
+    env:   { ...process.env, ENCRYPTION_KEY: encryptionKey },
     stdio: 'inherit',
   });
 
@@ -76,7 +95,8 @@ ipcMain.handle('get-version', () => app.getVersion());
 
 // App bootstrap sequence: start backend, wait for readiness, then open UI.
 app.whenReady().then(async () => {
-  startBackend();
+  const encryptionKey = getOrCreateEncryptionKey();
+  startBackend(encryptionKey);
   await waitForBackend();
   await createWindow();
   // Check for updates once app is fully initialized.

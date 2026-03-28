@@ -24,6 +24,7 @@ const T = {
     history:      'Historial',
     historyEmpty: 'Sin consultas recientes.',
     rows:         'filas',
+    readOnly:     '🔒 Solo lectura · La base de datos nunca se modifica',
     subtitle:     'Diagnósticos instantáneos de SQL Server en lenguaje natural — rendimiento, bloqueos, índices, memoria y más. La base de datos nunca se modifica.',
     chips: [
       '⚡ ¿Qué consultas consumen más CPU ahora mismo?',
@@ -42,6 +43,7 @@ const T = {
     history:      'History',
     historyEmpty: 'No recent queries.',
     rows:         'rows',
+    readOnly:     '🔒 Read-only · The database is never modified',
     subtitle:     'Instant SQL Server diagnostics in natural language — performance, blocking, indexes, memory and more. The database is never modified.',
     chips: [
       '⚡ Which queries are consuming the most CPU right now?',
@@ -98,9 +100,10 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [turns, loading]);
 
-  const submit = async (override?: string) => {
-    const q = (override ?? question).trim();
-    if (!q || connectionId === null || loading) return;
+  const submit = async (overrideQuestion?: string, overrideConn?: number) => {
+    const q = (overrideQuestion ?? question).trim();
+    const connId = overrideConn ?? connectionId;
+    if (!q || connId === null || loading) return;
 
     setLoading(true);
     setError(null);
@@ -110,7 +113,7 @@ export default function ChatPage() {
       const res = await apiFetch('/api/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q, connectionId, language: lang }),
+        body: JSON.stringify({ question: q, connectionId: connId, language: lang }),
       });
 
       if (!res.ok) {
@@ -192,8 +195,9 @@ export default function ChatPage() {
                     <button
                       className={styles.historyItem}
                       onClick={() => {
-                        setQuestion(item.question);
-                        textareaRef.current?.focus();
+                        setConnectionId(item.connection_id);
+                        setHistoryOpen(false);
+                        submit(item.question, item.connection_id);
                       }}
                     >
                       <span className={styles.historyQuestion}>{item.question}</span>
@@ -254,23 +258,26 @@ export default function ChatPage() {
 
           {/* ── Input bar ── */}
           <footer className={styles.inputBar}>
-            <textarea
-              ref={textareaRef}
-              className={styles.textarea}
-              value={question}
-              onChange={e => setQuestion(e.target.value)}
-              onKeyDown={onKeyDown}
-              placeholder={t.placeholder}
-              rows={2}
-              disabled={loading || connectionId === null}
-            />
-            <button
-              className={styles.sendBtn}
-              onClick={submit}
-              disabled={!canSubmit}
-            >
-              {t.send}
-            </button>
+            <div className={styles.inputRow}>
+              <textarea
+                ref={textareaRef}
+                className={styles.textarea}
+                value={question}
+                onChange={e => setQuestion(e.target.value)}
+                onKeyDown={onKeyDown}
+                placeholder={t.placeholder}
+                rows={2}
+                disabled={loading || connectionId === null}
+              />
+              <button
+                className={styles.sendBtn}
+                onClick={() => submit()}
+                disabled={!canSubmit}
+              >
+                {t.send}
+              </button>
+            </div>
+            <p className={styles.readOnlyBadge}>{t.readOnly}</p>
           </footer>
         </div>
       </div>
